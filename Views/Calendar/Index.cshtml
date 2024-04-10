@@ -1,0 +1,113 @@
+﻿@model TodoListApp.Models.Task
+@{
+    ViewData["Title"] = "To-do list";
+}
+<div class="container">
+    <h1>To-Do List</h1>
+    @using (Html.BeginForm("AddTask", "Calendar", FormMethod.Post))
+    {
+    @Html.AntiForgeryToken()
+    <div class="input-group mb-3">
+        @Html.TextAreaFor(model => model.Description, new { @class = "form-control resizable", placeholder = "Add a task" })
+        @Html.TextBoxFor(model => model.DueDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+        <button type="submit" class="btn btn-primary">Add Task</button>
+    </div>
+    }
+    <div class="input-group mb-3">
+        <span class="input-group-text">Filter by Due Date:</span>
+        <input type="date" id="filterDate" class="form-control">
+    </div>
+    <ul id="todo-list" class="list-group">
+        @if(ViewBag.Tasks != null)
+        {
+            @foreach (var task in ViewBag.Tasks)
+            {
+                <li class="list-group-item">
+                    <span class="task">@task.Description</span>
+                    <span class="time" data-due-date="@task.DueDate.ToString("yyyy-MM-dd")">@task.DueDate.ToString("dd.MM.yyyy")</span>
+                    <div class="actions">
+                        <button class="btn btn-primary btn-sm edit-button" data-description="@task.Description" data-due-date="@task.DueDate" data-id="@task.Id">Edit</button>
+                        <button class="btn btn-danger btn-sm delete-button" data-id="@task.Id">Delete</button>
+                    </div>
+                </li>
+            }
+        }
+    </ul>
+</div>
+
+<!-- Edit Task Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal header -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Task</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                @using (Html.BeginForm("EditTask", "Calendar", FormMethod.Post, new { id = "editTaskForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label for="editDescription" class="form-label">Description</label>
+                        @Html.TextBoxFor(model => model.Description, new { placeholder = "Enter task description", @class = "form-control", id = "editDescription", name = "editDescription" })
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDueDate" class="form-label">Due Date</label>
+                        @Html.TextBoxFor(model => model.DueDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", id = "editDueDate", name = "editDueDate" })
+                    </div>
+                    @Html.HiddenFor(model => model.Id, new { id = "editTaskId", name = "editTaskId" })
+                  }
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <input type="submit" form="editTaskForm" class="btn btn-primary" value="Save changes">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Task Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal header -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Delete Task</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <p>Are you sure you want to delete this task?</p>
+                @using (Html.BeginForm("DeleteTask", "Calendar", FormMethod.Post, new { id = "deleteTaskForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(model => model.Id, new { id = "deleteTaskId", name = "deleteTaskId" })
+                }
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                <input type="submit" form="deleteTaskForm" class="btn btn-danger" value="Delete Task">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Upcomming events modal -->
+<div class="modal fade" id="incomingTasksModal" tabindex="-1" aria-labelledby="incomingTasksModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="incomingTasksModalLabel">Incoming Tasks Tomorrow</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="incomingTasksModalBody">   
+            </div>
+        </div>
+    </div>
+</div>
+
