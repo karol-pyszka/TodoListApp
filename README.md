@@ -46,5 +46,29 @@ To run the Todo List App, follow these steps:
 3. **Access the Application**
     - Open a web browser and go to [https://localhost:5001/](https://localhost:5001/).
 
+## Development
+
+To develop the Todo List App, follow these steps:
+
+1. **Clone repository**
+    - Open your terminal or command prompt.
+    - Use the `git clone` command followed by the repository URL to clone the repository to your local machine.
+
+2. **Copy all files to TodoListApp Folder except .sln file**
+    - Navigate to the cloned repository directory.
+    - Copy all files and directories to a new folder named TodoListApp, excluding the `.sln` file.
+    - This ensures that you have all the necessary files for the Todo List App, ready for development.
+
+3. **Restore dependencies**
+    - Run `dotnet restore` in the root directory of your project (TodoListApp).
+    - This command ensures that all necessary dependencies are downloaded and restored to your local machine.
+
+4. **Open TodoListApp in Visual Studio**
+    - Launch Visual Studio IDE.
+    - Select "Open a project or solution" from the start window.
+    - Navigate to the TodoListApp folder and open it as a project.
+
+5. **Start development**
+
 ## License
 This project is licensed under the [MIT License](LICENSE).
